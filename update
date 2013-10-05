@@ -1,0 +1,6 @@
+#!/bin/bash
+#update .ics calandar
+
+echo "Fetching html calandar..."
+
+wget -O cal.html "http://www.doc.ic.ac.uk/internal/timetables/2013-14/autumn/class/13_2_10.htm"
