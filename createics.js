@@ -5,7 +5,6 @@
 var xmldoc = require('./lib/xmldoc');
 var fs = require('fs');
 var startDate = new Date("October 07,2013 09:00");//TO-DO get from HTML
-var id = 1;
 
 function pad(n, width, z) {
   z = z || '0';
@@ -25,30 +24,29 @@ function calDate(week, day){
     return dt;
 }
 
-function convertToIcs(weekStart,weekEnd,day,time,val){
-    weekStart=parseInt(weekStart);
-    weekEnd=parseInt(weekEnd);
-    for(var i = weekStart; i <= weekEnd; i++){
+function convertToIcs(week,day,time,val,id){   
 	var event = "";
-	console.log(id + " wk:" + i + " d:" + day + " t:" + time + " ::" + val);
+	console.log(id + " wk:" + week + " d:" + day + " t:" + time + " ::" + val);
 	var timeS = pad(time,2,0);
 	time++;
 	var timeF = pad(time,2,0);
-	var fDay = pad(day,2,0);
 	var loc = val.substr(val.length -3)
-	var eDate = calDate(i,day);
+	var eDate = calDate(week,day);
+	var dayF = pad(eDate.getDate(),0);
+	var monF = pad(eDate.getMonth()+1,0);
+	var year = eDate.getFullYear();
+	var info = val.split(":");
 	event += "BEGIN:VEVENT\n";
-	event += "DTSTART:201310"+fDay+"T"+timeS+"0000Z\n";
-	event += "DTEND:201310"+fDay+"T"+timeF+"0000Z\n";
+	event += "DTSTART:"+year+monF+dayF+"T"+timeS+"0000\n";
+	event += "DTEND:"+year+monF+dayF+"T"+timeF+"0000\n";
 	event += "LOCATION:HXKL"+loc+"\n";
 	event += "UID:"+id+"@doc.ic.ac.uk\n";
-	event += "DTSTAMP:20130621T230543Z\n";
-	event += "SUMMARY:Lecture\n";
-	event += "DESCRIPTION:"+val+"\n";
+	event += "DTSTAMP:20130621T120000Z\n";
+	event += "SUMMARY:"+info[0]+"\n";
+	event += "DESCRIPTION:"+info[1]+"\n";
 	event += "SEQUENCE:1\n";
 	event += "END:VEVENT\n";
-	id++;
-    }
+	return event;
 }
 
 function getWeeks(val){
@@ -91,8 +89,12 @@ fs.readFile('cal.html', 'utf8', function (err,data) {
 		      var i;
 		      for (i=0, tot=modules.length; i < tot; i++) {
 			  var weeks = getWeeks(modules[i]);
+			  weekStart=parseInt(weeks[0]);
+			  weekEnd=parseInt(weeks[1]);
 			  //populate ics with events
-			  convertToIcs(weeks[0],weeks[1],day,time,modules[i]);
+			  for(var z=weekStart;z<=weekEnd;z++){
+			  ics += convertToIcs(z,day,time,modules[i],id++);
+			  }
 		      }
 		  }
 		  day++;
