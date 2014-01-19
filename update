@@ -3,4 +3,5 @@
 
 echo "Fetching html calandar..."
 
+# wget is a utility for retrieving files using HTTP, HTTPS and FTP
 wget -O cal.html "http://www.doc.ic.ac.uk/internal/timetables/2013-14/autumn/class/13_2_10.htm"
