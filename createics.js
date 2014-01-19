@@ -3,7 +3,7 @@
 //Mantains an up-to-date .ics calendar for DOC students
 
 var xmldoc = require('./lib/xmldoc');
-var fs = require('fs');
+var fs = require('fs'); // File I/O
 var startDate = new Date("October 07,2013 09:00");//TO-DO get from HTML
 
 function pad(n, width, z) {
@@ -63,6 +63,7 @@ fs.readFile('cal.html', 'utf8', function (err,data) {
     return console.log(err);
   }
   else {
+      // ics file preamble
       var ics = "BEGIN:VCALENDAR\nVERSION:2.0\nMETHOD:PUBLISH\nX-WR-CALNAME:doc.ic.ac.uk\n";
       //clean up html
       var document=data.replace(/<br>/g,":<br />");
@@ -108,6 +109,7 @@ fs.readFile('cal.html', 'utf8', function (err,data) {
       });
       }
   ics += "END:VCALENDAR";
+  // Write the contents of ics to newcal.txt
   fs.writeFile("./newcal.txt", ics, function(err) {
     if(err) {
         console.log(err);
